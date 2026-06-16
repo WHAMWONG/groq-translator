@@ -18,6 +18,7 @@ import { TranslateMode } from "./providers/types";
 import { ProvidersHook, useProviders } from "./hooks/useProvider";
 import { createProvider } from "./providers";
 import { Provider } from "./providers/base";
+import groqConfig from "./providers/groq/config";
 
 export default function getBase(
   props: LaunchProps,
@@ -99,6 +100,13 @@ export default function getBase(
         });
       }
     }
+  } else if (providerName === "groq") {
+    provider = createProvider(providerName, {
+      name: providerName,
+      entrypoint: groqConfig.defaultEntrypoint,
+      apikey,
+      apiModel: groqConfig.defaultModel?.id,
+    });
   } else {
     provider = createProvider(providerName, {
       name: providerName,

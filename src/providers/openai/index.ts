@@ -116,18 +116,16 @@ export default class extends Provider {
               console.debug({ error: "No result" });
             } else {
               const { finish_reason: finishReason } = choices[0];
-              if (finishReason) {
-                yield finishReason;
-              } else {
-                let targetTxt = "";
-                const { content = "", role } = choices[0].delta;
-
-                targetTxt = content ? content : "";
-
+              const { content = "", role } = choices[0].delta ?? {};
+              if (content) {
+                let targetTxt = content;
                 if (quoteProcessor) {
                   targetTxt = quoteProcessor.processText(targetTxt);
                 }
                 yield { content: targetTxt, role, isWordMode };
+              }
+              if (finishReason) {
+                yield finishReason;
               }
             }
           } catch (error) {

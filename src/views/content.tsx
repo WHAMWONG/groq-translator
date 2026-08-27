@@ -177,7 +177,7 @@ export const ContentView = (props: ContentViewProps) => {
     });
 
     const text = query.text;
-    const detectFrom: string = query.from == "auto" ? (await detectLang(query.text)) ?? "en" : query.from;
+    const detectFrom: string = query.from == "auto" ? ((await detectLang(query.text)) ?? "en") : query.from;
 
     // 检测语言为中文且目标语言为中文时，自动翻译为英文
     const detectTo =
@@ -407,6 +407,7 @@ export const ContentView = (props: ContentViewProps) => {
                 created_at={item.created_at}
                 ocrImg={item.ocrImg}
                 provider={item.provider}
+                error={item.result.error}
               />
             }
           />

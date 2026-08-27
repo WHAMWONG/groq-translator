@@ -1,23 +1,26 @@
 import fetch from "node-fetch";
 import { IConfig, IModel } from "../types";
 
-// Fallback list of currently available Groq production models.
-// llama-3.3-70b-versatile, llama-3.1-8b-instant, llama3-*, gemma2-9b-it and
-// mixtral-8x7b-32768 were all decommissioned by Groq (last batch on 2026-08-16).
+// Google AI Studio (Gemini) via its OpenAI-compatible API.
+// https://ai.google.dev/gemini-api/docs/openai
 const fallbackModels: IModel[] = [
-  { name: "openai/gpt-oss-120b", id: "openai/gpt-oss-120b" },
-  { name: "openai/gpt-oss-20b", id: "openai/gpt-oss-20b" },
-  { name: "qwen/qwen3.6-27b", id: "qwen/qwen3.6-27b" },
-  { name: "qwen/qwen3.8-27b", id: "qwen/qwen3.8-27b" },
-  { name: "moonshotai/kimi-k2-instruct", id: "moonshotai/kimi-k2-instruct" },
-  { name: "meta-llama/llama-4-maverick-17b-128e-instruct", id: "meta-llama/llama-4-maverick-17b-128e-instruct" },
+  { name: "gemini-3.7-flash", id: "gemini-3.7-flash" },
+  { name: "gemini-3.6-flash", id: "gemini-3.6-flash" },
+  { name: "gemini-3.5-flash", id: "gemini-3.5-flash" },
+  { name: "gemini-3.5-flash-lite", id: "gemini-3.5-flash-lite" },
+  { name: "gemini-3.1-pro-preview", id: "gemini-3.1-pro-preview" },
+  { name: "gemini-2.5-flash", id: "gemini-2.5-flash" },
+  { name: "gemini-2.5-pro", id: "gemini-2.5-pro" },
 ];
+
+// Non-chat model families that show up in the models list.
+const EXCLUDED = /embedding|imagen|veo|tts|audio|image|live/i;
 
 const config: IConfig = {
   requireModel: true,
   defaultModel: {
-    id: "openai/gpt-oss-120b",
-    name: "openai/gpt-oss-120b",
+    id: "gemini-3.5-flash",
+    name: "gemini-3.5-flash",
   },
   supportCustomModel: true,
   async listModels(apikey: string | undefined, entrypoint: string | undefined): Promise<IModel[]> {
@@ -35,13 +38,17 @@ const config: IConfig = {
         return fallbackModels;
       }
       const data = (await response.json()) as { data: { id: string }[] };
-      return data.data.map((model) => ({ name: model.id, id: model.id }));
+      const models = data.data
+        .map((model) => model.id.replace(/^models\//, ""))
+        .filter((id) => id.includes("gemini") && !EXCLUDED.test(id))
+        .map((id) => ({ name: id, id }));
+      return models.length > 0 ? models : fallbackModels;
     } catch (error) {
       console.error("Failed to fetch model list from API, using fallback models:", error);
       return fallbackModels;
     }
   },
-  defaultEntrypoint: "https://api.groq.com/openai/v1/chat/completions",
+  defaultEntrypoint: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
   supportCustomEntrypoint: false,
   requireApiKey: true,
   hasApiKey: true,

@@ -268,6 +268,10 @@
           "title": "OpenAI"
         },
         {
+          "value": "gemini",
+          "title": "Google AI Studio"
+        },
+        {
           "value": "custom",
           "title": "Custom..."
         }
@@ -275,28 +279,79 @@
     },
     {
       "name": "apikey",
-      "label": "API Key",
-      "description": "Enter your API Key for your provider,  Type 'none' if your entrypoint do not require an API key",
+      "label": "Groq API Key",
+      "description": "API Key for Groq. Get one at console.groq.com/keys",
       "type": "password",
-      "title": "API Key",
-      "required": true
+      "title": "Groq API Key",
+      "required": false
     },
     {
       "name": "entrypoint",
-      "label": "API Entrypoint",
-      "description": "Enter your provider entrypoint, If your provider does not require an entrypoint, it will be ignored.",
+      "label": "Groq API Entrypoint",
+      "description": "Groq API endpoint. Leave as-is unless you use a proxy.",
       "type": "textfield",
-      "title": "API Entrypoint",
+      "title": "Groq API Entrypoint",
       "default": "https://api.groq.com/openai/v1/chat/completions",
-      "required": true
+      "required": false
+    },
+    {
+      "name": "groqModel",
+      "type": "dropdown",
+      "required": false,
+      "title": "Groq Model",
+      "default": "openai/gpt-oss-120b",
+      "description": "Model used when Provider is Groq",
+      "data": [
+        {
+          "title": "openai/gpt-oss-120b",
+          "value": "openai/gpt-oss-120b"
+        },
+        {
+          "title": "openai/gpt-oss-20b",
+          "value": "openai/gpt-oss-20b"
+        },
+        {
+          "title": "qwen/qwen3.8-27b",
+          "value": "qwen/qwen3.8-27b"
+        },
+        {
+          "title": "qwen/qwen3.6-27b",
+          "value": "qwen/qwen3.6-27b"
+        },
+        {
+          "title": "moonshotai/kimi-k2-instruct",
+          "value": "moonshotai/kimi-k2-instruct"
+        },
+        {
+          "title": "meta-llama/llama-4-maverick-17b-128e-instruct",
+          "value": "meta-llama/llama-4-maverick-17b-128e-instruct"
+        }
+      ]
+    },
+    {
+      "name": "openaiApikey",
+      "label": "OpenAI API Key",
+      "description": "API Key for OpenAI. Type 'none' if your endpoint needs no key.",
+      "type": "password",
+      "title": "OpenAI API Key",
+      "required": false
+    },
+    {
+      "name": "openaiEntrypoint",
+      "label": "OpenAI API Entrypoint",
+      "description": "OpenAI-compatible endpoint. Change this for a proxy or compatible API.",
+      "type": "textfield",
+      "title": "OpenAI API Entrypoint",
+      "default": "https://api.openai.com/v1/chat/completions",
+      "required": false
     },
     {
       "name": "apiModel",
       "type": "dropdown",
       "required": false,
-      "title": "API Model",
+      "title": "OpenAI Model",
       "default": "gpt-4o-mini",
-      "description": "Choose an OpenAI API model, which is only available when using the OpenAI provider",
+      "description": "Model used when Provider is OpenAI",
       "data": [
         {
           "title": "gpt-4o",
@@ -345,6 +400,65 @@
         {
           "title": "gpt-4-turbo",
           "value": "gpt-4-turbo"
+        }
+      ]
+    },
+    {
+      "name": "geminiApikey",
+      "label": "Google AI Studio API Key",
+      "description": "API Key for Google AI Studio. Get one at aistudio.google.com/apikey",
+      "type": "password",
+      "title": "Google AI Studio API Key",
+      "required": false
+    },
+    {
+      "name": "geminiEntrypoint",
+      "label": "Google AI Studio API Entrypoint",
+      "description": "Gemini OpenAI-compatible endpoint. Leave as-is unless you use a proxy.",
+      "type": "textfield",
+      "title": "Google AI Studio API Entrypoint",
+      "default": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+      "required": false
+    },
+    {
+      "name": "geminiModel",
+      "type": "dropdown",
+      "required": false,
+      "title": "Google AI Studio Model",
+      "default": "gemini-3.5-flash",
+      "description": "Model used when Provider is Google AI Studio",
+      "data": [
+        {
+          "title": "gemini-3.7-flash",
+          "value": "gemini-3.7-flash"
+        },
+        {
+          "title": "gemini-3.6-flash",
+          "value": "gemini-3.6-flash"
+        },
+        {
+          "title": "gemini-3.5-flash",
+          "value": "gemini-3.5-flash"
+        },
+        {
+          "title": "gemini-3.5-flash-lite",
+          "value": "gemini-3.5-flash-lite"
+        },
+        {
+          "title": "gemini-3.1-pro-preview",
+          "value": "gemini-3.1-pro-preview"
+        },
+        {
+          "title": "gemini-3-flash-preview",
+          "value": "gemini-3-flash-preview"
+        },
+        {
+          "title": "gemini-2.5-flash",
+          "value": "gemini-2.5-flash"
+        },
+        {
+          "title": "gemini-2.5-pro",
+          "value": "gemini-2.5-pro"
         }
       ]
     },
@@ -719,7 +833,7 @@
     "node-fetch": "^3.3.0",
     "socks-proxy-agent": "^7.0.0",
     "stream-json": "^1.8.0",
-    "uuid": "^9.0.0"
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.1.1",

@@ -19,6 +19,15 @@ import { ProvidersHook, useProviders } from "./hooks/useProvider";
 import { createProvider } from "./providers";
 import { Provider } from "./providers/base";
 import groqConfig from "./providers/groq/config";
+import geminiConfig from "./providers/gemini/config";
+import openaiConfig from "./providers/openai/config";
+import { IConfig } from "./providers/types";
+
+const providerConfigs: Record<string, IConfig> = {
+  groq: groqConfig,
+  openai: openaiConfig,
+  gemini: geminiConfig,
+};
 
 export default function getBase(
   props: LaunchProps,
@@ -77,13 +86,32 @@ export default function getBase(
     provider: providerName,
     entrypoint,
     apikey,
+    groqModel,
+    openaiEntrypoint,
+    openaiApikey,
     apiModel,
+    geminiEntrypoint,
+    geminiApikey,
+    geminiModel,
   } = getPreferenceValues<{
     entrypoint: string;
     apikey: string;
+    groqModel?: string;
+    openaiEntrypoint?: string;
+    openaiApikey?: string;
     apiModel: string;
+    geminiEntrypoint?: string;
+    geminiApikey?: string;
+    geminiModel?: string;
     provider: string;
   }>();
+
+  // Each provider uses only its own credentials, never another provider's key.
+  const credentials: Record<string, { entrypoint?: string; apikey?: string; apiModel?: string }> = {
+    groq: { entrypoint, apikey, apiModel: groqModel },
+    openai: { entrypoint: openaiEntrypoint, apikey: openaiApikey, apiModel },
+    gemini: { entrypoint: geminiEntrypoint, apikey: geminiApikey, apiModel: geminiModel },
+  };
 
   let provider: Provider | undefined;
   let providerHook: ProvidersHook | null = null;
@@ -100,19 +128,14 @@ export default function getBase(
         });
       }
     }
-  } else if (providerName === "groq") {
-    provider = createProvider(providerName, {
-      name: providerName,
-      entrypoint: groqConfig.defaultEntrypoint,
-      apikey,
-      apiModel: groqConfig.defaultModel?.id,
-    });
   } else {
+    const config = providerConfigs[providerName] ?? openaiConfig;
+    const creds = credentials[providerName] ?? {};
     provider = createProvider(providerName, {
       name: providerName,
-      entrypoint,
-      apikey,
-      apiModel,
+      entrypoint: creds.entrypoint || config.defaultEntrypoint,
+      apikey: creds.apikey,
+      apiModel: creds.apiModel || config.defaultModel?.id,
     });
   }
   if (provider) {

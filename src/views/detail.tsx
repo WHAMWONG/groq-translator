@@ -5,10 +5,11 @@ import { TranslateMode } from "../providers/types";
 
 const PROVIDER_LABEL: Record<string, string> = {
   openai: "OpenAI",
+  groq: "Groq",
   raycast: "Raycast AI",
   azure: "Azure",
   palm2: "PaLM 2",
-  gemini: "Gemini",
+  gemini: "Google AI Studio",
 };
 
 export interface DetailViewProps {
@@ -21,14 +22,16 @@ export interface DetailViewProps {
   created_at?: string;
   ocrImg: string | undefined;
   provider: string | undefined;
+  error?: string;
 }
 
 export const DetailView = (props: DetailViewProps) => {
-  const { showMetadata, text, original, from, to, mode, created_at, ocrImg, provider } = props;
+  const { showMetadata, text, original, from, to, mode, created_at, ocrImg, provider, error } = props;
   const imgMd = ocrImg ? `\n![](${ocrImg})` : "";
+  const errorMd = error ? `⚠️ **Error**\n\n${error}\n` : "";
   return (
     <List.Item.Detail
-      markdown={`${text}\n${imgMd}\n\`\`\`\n${original}\n\`\`\`\n`}
+      markdown={`${errorMd}${text}\n${imgMd}\n\`\`\`\n${original}\n\`\`\`\n`}
       metadata={
         showMetadata ? (
           <Detail.Metadata>

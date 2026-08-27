@@ -38,7 +38,12 @@ const config: IConfig = {
         // check gpt inside the model list
         result = data.data
           .filter((model: { id: string }) => {
-            return model.id.includes("gpt") || model.id.startsWith("o1") || model.id.startsWith("o3") || model.id.startsWith("o4");
+            return (
+              model.id.includes("gpt") ||
+              model.id.startsWith("o1") ||
+              model.id.startsWith("o3") ||
+              model.id.startsWith("o4")
+            );
           })
           .map((model: { id: string }) => ({
             name: model.id,
